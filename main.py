@@ -18,3 +18,12 @@ class Field:
 grid = Field('tiger', 'rabbits')
 grid.display()
 
+class Rabbit:
+    def __init__(self, x, y):
+        self.x = x # Координата x
+        self.y = y # Координата y
+        self.is_catched = False
+
+    def to_catch(self): # Меняет атрибут класса is_catched на True или False
+        self.is_catched = True
+
