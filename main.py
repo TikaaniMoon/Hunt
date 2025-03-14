@@ -14,11 +14,14 @@ class Field:
                 row.append('*')
             matrix.append(row)
 
+        matrix[self.tiger.x][self.tiger.y] = 'T'
+
+        for rabbit in self.rabbits:
+            if not rabbit.is_catched:
+                matrix[rabbit.x][rabbit.y] = 'З'
+
         for row in matrix:
             print(' '.join(row))
-
-grid = Field('tiger', 'rabbits')
-grid.display()
 
 class Rabbit:
     def __init__(self, x, y):
@@ -55,4 +58,22 @@ class Tiger:
     def update_state(self):
         if self.state == 'hunting':
             print('Тигр охотится')
+            self.randomly_move()
+            # Проверка, что кролик рядом
 
+class Game:
+    def __init__(self):
+        self.Shiaron = Tiger()
+
+        self.rabbit1 = Rabbit(random.randint(1, 4), random.randint(1, 4))
+        self.rabbit2 = Rabbit(random.randint(1, 4), random.randint(1, 4))
+
+        self.rabbits = [self.rabbit1, self.rabbit2]
+
+        self.field = Field(self.Shiaron, self.rabbits)
+
+        self.field.display()
+        # while self.Shiaron.state != 'return_home':
+        # Распечатка поля
+
+hunt = Game()
