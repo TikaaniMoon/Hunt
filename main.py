@@ -1,4 +1,5 @@
 import random
+import time
 
 class Field:
     def __init__(self, tiger, rabbits):
@@ -41,14 +42,14 @@ class Tiger:
 
     def randomly_move(self):
 
-        self.x = random.choice([-1, 0, 1])
+        self.x += random.choice([-1, 0, 1])
 
         if self.x < 0:
             self.x = 0
         elif self.x > 4:
             self.x = 0
 
-        self.y = random.choice([-1, 0, 1])
+        self.y += random.choice([-1, 0, 1])
 
         if self.y < 0:
             self.y = 0
@@ -72,8 +73,9 @@ class Game:
 
         self.field = Field(self.Shiaron, self.rabbits)
 
-        self.field.display()
-        # while self.Shiaron.state != 'return_home':
-        # Распечатка поля
+        while self.Shiaron.state != 'return_home':
+            self.field.display()
+            self.Shiaron.update_state()
+            time.sleep(1)
 
 hunt = Game()
