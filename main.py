@@ -34,42 +34,65 @@ class Rabbit:
         self.is_catched = True
 
 class Tiger:
-    def __init__(self):
+    def __init__(self, rabbits):
         self.x = 0
         self.y = 0
         self.state = 'hunting'
         self.lucky_jump = 0.5
+        self.rabbits = rabbits
 
     def randomly_move(self):
 
-        self.x += random.choice([-1, 0, 1])
+        self.x += random.choice([-1, 1])
 
         if self.x < 0:
             self.x = 0
         elif self.x > 4:
             self.x = 0
 
-        self.y += random.choice([-1, 0, 1])
+        self.y += random.choice([-1, 1])
 
         if self.y < 0:
             self.y = 0
         elif self.y > 4:
             self.y = 0
 
+    def check_nearby_rabbit(self, rabbit):   # Проверка, что кролик рядом
+        return abs(self.x - rabbit.x) <= 1 and abs(self.y - rabbit.y) <= 1
+
     def update_state(self):
         if self.state == 'hunting':
             print('Тигр охотится')
             self.randomly_move()
-            # Проверка, что кролик рядом
+
+            if any(self.check_nearby_rabbit(rabbit) for rabbit in self.rabbits):
+                self.state = 'attack'
+                print('Тигр атакует')
+
+        elif self.state == 'attack':
+            current_lucky = random.random()
+            if current_lucky < self.lucky_jump:
+                print('Заяц не пойман')
+                self.state = 'return_home'
+            else:
+                for rabbit in self.rabbits:
+                    if self.check_nearby_rabbit(rabbit):
+                        rabbit.to_catch()
+                        print(f'Заяц на клетке({rabbit.x}, {rabbit.y}) пойман!')
+                        self.state = 'return_home'
+
+        elif self.state == 'return_home':
+            self.x, self.y = 0, 0
 
 class Game:
     def __init__(self):
-        self.Shiaron = Tiger()
 
         self.rabbit1 = Rabbit(random.randint(1, 4), random.randint(1, 4))
         self.rabbit2 = Rabbit(random.randint(1, 4), random.randint(1, 4))
 
         self.rabbits = [self.rabbit1, self.rabbit2]
+
+        self.Shiaron = Tiger(self.rabbits)
 
         self.field = Field(self.Shiaron, self.rabbits)
 
@@ -77,5 +100,8 @@ class Game:
             self.field.display()
             self.Shiaron.update_state()
             time.sleep(1)
+
+            if self.Shiaron.state == 'return_home':
+                break
 
 hunt = Game()
